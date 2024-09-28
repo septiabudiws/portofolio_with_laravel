@@ -230,31 +230,32 @@
       </div>
       <div class="row justify-content-center animation" data-animation="fadeInUp" data-animation-delay="0.04s">
         <div class="carousel_slider testimonial_style1 owl-carousel owl-theme" data-margin="20" data-dots="false"
-             data-autoplay="true"
-            data-responsive='{"0":{"items": "1"}, "768":{"items": "2"}, "1199":{"items": "3"}}'>
+          data-autoplay="true" data-responsive='{"0":{"items": "1"}, "768":{"items": "2"}, "1199":{"items": "3"}}'>
           @foreach ($blog as $item)
-          <div class="item">
-          <div class="blog_post">
-            <div class="blog_img">
-              <a href="/blog/{{ $item->token_blog }}">
-                <img src="{{ asset('thumbnail_blog/'. $item->thumbnail_blog) }}" alt="blog_small_img1">
-              </a>
-            </div>
-            <div class="blog_content">
-              <div class="blog_text">
-                <div class="post_category"><a href="/blog/{{ $item->token_blog }}">{{ $item->kategori_blog }}</a></div>
-                <h5 class="blog_title"><a href="/blog/{{ $item->token_blog }}">{{ $item->judul_blog }}</a></h5>
-                <ul class="list_none blog_meta">
-                  <li><a href="/blog/{{ $item->token_blog }}"><i class="ion-calendar"></i>{{ $item->date }}</a></li>
-                </ul>
-                <p>{{ $item->deskripsi_singkat }}</p>
-                <a href="/blog/{{ $item->token_blog }}" class="read_more">Read More</a>
+            <div class="item">
+              <div class="blog_post">
+                <div class="blog_img">
+                  <a href="/blog/{{ $item->token_blog }}">
+                    <img src="{{ asset('thumbnail_blog/' . $item->thumbnail_blog) }}" alt="blog_small_img1">
+                  </a>
+                </div>
+                <div class="blog_content">
+                  <div class="blog_text">
+                    <div class="post_category"><a href="/blog/{{ $item->token_blog }}">{{ $item->kategori_blog }}</a>
+                    </div>
+                    <h5 class="blog_title"><a href="/blog/{{ $item->token_blog }}">{{ $item->judul_blog }}</a></h5>
+                    <ul class="list_none blog_meta">
+                      <li><a href="/blog/{{ $item->token_blog }}"><i class="ion-calendar"></i>{{ $item->date }}</a>
+                      </li>
+                    </ul>
+                    <p>{{ $item->deskripsi_singkat }}</p>
+                    <a href="/blog/{{ $item->token_blog }}" class="read_more">Read More</a>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          @endforeach
         </div>
-        @endforeach
-      </div>
       </div>
     </div>
   </section>
@@ -273,33 +274,71 @@
       <div class="row">
         <div class="col-md-6">
           <div class="field_form form_style3 animation" data-animation="fadeInUp" data-animation-delay="0.02s">
-            <form method="post" name="enq">
+            <div class="alert alert-success alert-dismissible fade show d-none my-alert" role="alert">
+              <strong>Thank you!</strong> Your message was delivered
+            </div>
+            <form name="porto-contact">
               <div class="row">
                 <div class="form-group col-12">
                   <input required="required" placeholder="Enter Name *" id="first-name" class="form-control"
-                    name="name" type="text">
+                    name="nama" type="text">
+                </div>
+                <div class="form-group col-12">
+                  <input placeholder="Enter Mobile Phone Number *" id="number" class="form-control" name="nomer_hp"
+                    type="text">
                 </div>
                 <div class="form-group col-12">
                   <input required="required" placeholder="Enter Email *" id="email" class="form-control"
                     name="email" type="email">
                 </div>
-                <div class="form-group col-12">
-                  <input placeholder="Enter Subject" id="subject" class="form-control" name="subject"
-                    type="text">
-                </div>
                 <div class="form-group col-lg-12">
-                  <textarea required="required" placeholder="Message *" id="description" class="form-control" name="message"
+                  <textarea required="required" placeholder="Message *" id="description" class="form-control" name="pesan"
                     rows="5"></textarea>
                 </div>
                 <div class="col-lg-12">
-                  <button type="submit" title="Submit Your Message!" class="btn btn-default rounded-0 btn-aylen"
-                    id="submitButton" name="submit" value="Submit">Submit</button>
+                  <button type="submit" title="Submit Your Message!"
+                    class="btn btn-default btn-kirim rounded-0 btn-aylen" value="Submit">Submit</button>
+                  <button type="submit" disabled class="btn btn-default btn-loading rounded-0 d-none"
+                    value="Submit">
+                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                    Loading...</button>
                 </div>
                 <div class="col-lg-12 text-center">
                   <div id="alert-msg" class="alert-msg text-center"></div>
                 </div>
               </div>
             </form>
+
+            <script>
+              const scriptURL =
+                'https://script.google.com/macros/s/AKfycbwGHrfDgnoNeXw-DRTfQBeSNoWDfsnsP28I7rlJKzPkt4mq1RhzebbOdbAmGklOVrzbLQ/exec';
+              const form = document.forms['porto-contact']
+              const btnKirim = document.querySelector('.btn-kirim');
+              const btnLoading = document.querySelector('.btn-loading');
+              const myAlert = document.querySelector('.my-alert');
+
+              form.addEventListener('submit', e => {
+                e.preventDefault()
+                // ketika tombol submit diklik
+                // tampilkan tombol loading, hilangkan tombol kirim
+                btnLoading.classList.toggle('d-none');
+                btnKirim.classList.toggle('d-none');
+                fetch(scriptURL, {
+                    method: 'POST',
+                    body: new FormData(form)
+                  })
+                  .then(response => {
+                    btnLoading.classList.toggle('d-none');
+                    btnKirim.classList.toggle('d-none');
+                    myAlert.classList.toggle('d-none')
+
+                    form.reset();
+                    console.log('Success!', response)
+                  })
+                  .catch(error => console.error('Error!', error.message))
+              })
+            </script>
+
           </div>
         </div>
         <div class="col-md-6">
